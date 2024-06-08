@@ -12,6 +12,8 @@ spec:
     path: 'argocd-app-manifests/'
     repoURL: 'https://github.com/rishav24x7/ArgoandCrossplane'
     targetRevision: main
+    directory:
+      recurse: true
   sources: []
   project: default
   syncPolicy:
