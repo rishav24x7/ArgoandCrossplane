@@ -9,7 +9,7 @@ spec:
     namespace: upbound-system
     server: 'https://kubernetes.default.svc'
   source:
-    path: 'argocd-app-manifests/'
+    path: 'crossplane-provider-config'
     repoURL: 'https://github.com/rishav24x7/ArgoandCrossplane'
     targetRevision: main
     directory:
