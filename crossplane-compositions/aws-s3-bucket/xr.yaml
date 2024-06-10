@@ -1,0 +1,16 @@
+apiVersion: org.rishav.example/v1beta1
+kind: XBucket
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    crossplane.io/external-name: rishav-test-bucket
+  labels:
+    testing.upbound.io/example-name: s3
+  name: rishav-test-bucket
+spec:
+  resourceConfig:
+    deletionPolicy: Delete
+    providerConfigName: default
+    region: ap-south-1
+  forProvider:
+    objectLockEnabled: true
