@@ -1,0 +1,38 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: rishav-bucket-s3
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  writeConnectionSecretsToNamespace: argocd
+  compositeTypeRef:
+    apiVersion: org.rishav.example/v1beta1
+    kind: XBucket
+  patchSets:
+    - name: common-parameters
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig.region
+          toFieldPath: spec.forProvider.region
+  resources:
+    - name: s3Bucket
+      base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: Bucket
+        metadata:
+          name: crossplane-quickstart-bucket
+          annotations:
+            crossplane.io/external-name: rishav-bucket
+        spec:
+          forProvider:
+            objectLockEnabled: false
+      patches:
+      - type: PatchSet
+        patchSetName: common-parameters
