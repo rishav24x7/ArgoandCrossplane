@@ -1,1 +1,68 @@
 ##
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xbuckets.org.rishav.example
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  defaultCompositeDeletePolicy: Foreground
+  group: org.rishav.example
+  names:
+    kind: XBucket
+    plural: xbuckets
+  claimNames:
+    kind: Bucket
+    plural: buckets
+    shortNames:
+      - s3
+  versions:
+  - name: v1beta1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  objectLockEnabled:
+                    type: boolean
+                    default: true         
+              resourceConfig:
+                description: ResourceConfig defines general properties of this AWS resource.
+                type: object
+                properties:
+                  deletionPolicy:
+                    description: Defaults to Delete
+                    enum:
+                      - Delete
+                      - Orphan
+                    type: string
+                  providerConfigName:
+                    type: string
+                  region:
+                    type: string
+                required:
+                  - providerConfigName
+                  - region
+          status:
+            type: object
+            properties:
+              conditions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    reason:
+                      type: string
+                    message:
+                      type: string
