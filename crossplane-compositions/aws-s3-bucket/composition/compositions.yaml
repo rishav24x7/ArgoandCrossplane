@@ -36,3 +36,5 @@ spec:
       patches:
       - type: PatchSet
         patchSetName: common-parameters
+      - fromFieldPath: "spec.parameters.objectLockEnabled"
+        toFieldPath: "spec.forProvider.objectLockEnabled"
