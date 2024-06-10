@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: aws-s3-bucket
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - srv: xrd
+        path: crossplane-compositions/aws-s3-bucket/xrd/
+      - srv: compositions
+        path: crossplane-compositions/aws-s3-bucket/composition/
+      - srv: xr
+        path: crossplane-compositions/aws-s3-bucket/xr/
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: component
+              operator: In
+              values:
+                - xrd
+        - matchExpressions:
+            - key: component
+              operator: In
+              values:
+                - compositions
+        - matchExpressions:
+            - key: component
+              operator: In
+              values:
+                - xr
+  template:
+    metadata:
+      name: '{{srv}}'
+      labels:
+        component: '{{srv}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rishav24x7/ArgoandCrossplane'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        name: in-cluster
+        namespace: argo
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            maxDuration: 3m0s
+            factor: 2
+        syncOptions:
+          - CreateNamespace=true
