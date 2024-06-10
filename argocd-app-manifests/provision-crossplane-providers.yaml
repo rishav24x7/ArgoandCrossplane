@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-providers
+spec:
+  destination:
+    name: ''
+    namespace: upbound-system
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: crossplane-providers
+    repoURL: 'https://github.com/rishav24x7/ArgoandCrossplane'
+    targetRevision: main
+    directory:
+      recurse: true
+  sources: []
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
